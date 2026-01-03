@@ -307,6 +307,11 @@ body {
     color: #f59e0b;
 }
 
+.status.rejected {
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
 .icon-btn {
     background: none;
     border: none;

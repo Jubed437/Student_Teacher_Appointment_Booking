@@ -1,6 +1,6 @@
 import { auth, db } from './firebase.js';
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { collection, getDocs, addDoc, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import { collection, getDocs, addDoc, query, where, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 import { log } from './logger.js';
 
 let selectedTeacherEmail = null;
@@ -17,6 +17,10 @@ onAuthStateChanged(auth, async (user) => {
         const data = userDoc.docs[0].data();
         document.getElementById('student-name').textContent = data.name;
         document.getElementById('student-dept').textContent = data.department;
+
+        // Load data once authenticated
+        loadTeachers();
+        loadAppointments(user.uid);
     }
 });
 
@@ -92,37 +96,38 @@ document.getElementById('booking-form').addEventListener('submit', async (e) => 
     await log('student_book_appointment', auth.currentUser.uid, { teacherEmail: selectedTeacherEmail });
     alert('Appointment request sent!');
     e.target.reset();
-    loadAppointments();
+    // loadAppointments is now handled by onSnapshot
 });
 
-async function loadAppointments() {
+async function loadAppointments(uid) {
     const tbody = document.getElementById('appts-tbody');
-    const q = query(collection(db, 'appointments'), where('studentId', '==', auth.currentUser.uid));
-    const snapshot = await getDocs(q);
+    const q = query(collection(db, 'appointments'), where('studentId', '==', uid));
 
-    tbody.innerHTML = '';
-    for (const d of snapshot.docs) {
-        const data = d.data();
+    onSnapshot(q, async (snapshot) => {
+        tbody.innerHTML = '';
+        for (const d of snapshot.docs) {
+            const data = d.data();
 
-        const teacherQ = query(collection(db, 'users'), where('email', '==', data.teacherId));
-        const teacherSnap = await getDocs(teacherQ);
-        const teacherData = teacherSnap.empty ? { name: 'Teacher' } : teacherSnap.docs[0].data();
+            const teacherQ = query(collection(db, 'users'), where('email', '==', data.teacherId));
+            const teacherSnap = await getDocs(teacherQ);
+            const teacherData = teacherSnap.empty ? { name: 'Teacher' } : teacherSnap.docs[0].data();
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                <div class="user-cell">
-                    <img src="https://ui-avatars.com/api/?name=${teacherData.name}&background=random&size=32">
-                    ${teacherData.name}
-                </div>
-            </td>
-            <td>${data.date}</td>
-            <td>${data.time}</td>
-            <td><span class="status ${data.status}">${data.status}</span></td>
-            <td><button class="icon-btn"><i class="fas fa-ellipsis-v"></i></button></td>
-        `;
-        tbody.appendChild(row);
-    }
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <div class="user-cell">
+                        <img src="https://ui-avatars.com/api/?name=${teacherData.name}&background=random&size=32">
+                        ${teacherData.name}
+                    </div>
+                </td>
+                <td>${data.date}</td>
+                <td>${data.time}</td>
+                <td><span class="status ${data.status}">${data.status}</span></td>
+                <td><button class="icon-btn"><i class="fas fa-ellipsis-v"></i></button></td>
+            `;
+            tbody.appendChild(row);
+        }
+    });
 }
 
 const slots = ['09:00 AM', '10:00 AM', '11:30 AM', '02:00 PM', '04:15 PM'];
@@ -138,6 +143,3 @@ slots.forEach(time => {
     };
     timeGrid.appendChild(btn);
 });
-
-loadTeachers();
-loadAppointments();
