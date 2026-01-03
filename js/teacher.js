@@ -1,6 +1,6 @@
 import { auth, db } from './firebase.js';
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { collection, getDocs, doc, updateDoc, query, where, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import { collection, getDocs, doc, updateDoc, query, where, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 import { log } from './logger.js';
 
 onAuthStateChanged(auth, async (user) => {
@@ -35,44 +35,45 @@ async function loadRequests(email) {
         where('teacherId', '==', email),
         where('status', '==', 'pending')
     );
-    const snapshot = await getDocs(q);
 
-    grid.innerHTML = '';
-    let count = 0;
+    onSnapshot(q, async (snapshot) => {
+        grid.innerHTML = '';
+        let count = 0;
 
-    for (const d of snapshot.docs) {
-        count++;
-        const data = d.data();
+        for (const d of snapshot.docs) {
+            count++;
+            const data = d.data();
 
-        const studentDoc = await getDoc(doc(db, 'users', data.studentId));
-        const studentData = studentDoc.exists() ? studentDoc.data() : { name: 'Student' };
+            const studentDoc = await getDoc(doc(db, 'users', data.studentId));
+            const studentData = studentDoc.exists() ? studentDoc.data() : { name: 'Student' };
 
-        const card = document.createElement('div');
-        card.className = 'request-card';
-        card.innerHTML = `
-            <div class="student-info">
-                <img src="https://ui-avatars.com/api/?name=${studentData.name}&background=random" class="student-avatar">
-                <div>
-                    <h3 class="student-name">${studentData.name}</h3>
-                    <span class="student-dept">${studentData.department || 'Student'}</span>
+            const card = document.createElement('div');
+            card.className = 'request-card';
+            card.innerHTML = `
+                <div class="student-info">
+                    <img src="https://ui-avatars.com/api/?name=${studentData.name}&background=random" class="student-avatar">
+                    <div>
+                        <h3 class="student-name">${studentData.name}</h3>
+                        <span class="student-dept">${studentData.department || 'Student'}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="message-box">
-                <div class="timestamp">
-                    <i class="far fa-clock"></i>
-                    <span>${data.date} ${data.time}</span>
+                <div class="message-box">
+                    <div class="timestamp">
+                        <i class="far fa-clock"></i>
+                        <span>${data.date} ${data.time}</span>
+                    </div>
+                    <p class="message">"${data.purpose}"</p>
                 </div>
-                <p class="message">"${data.purpose}"</p>
-            </div>
-            <div class="actions">
-                <button class="action-btn reject" onclick="handleRequest('${d.id}', 'reject')">Reject</button>
-                <button class="action-btn approve" onclick="handleRequest('${d.id}', 'approve')">Approve</button>
-            </div>
-        `;
-        grid.appendChild(card);
-    }
+                <div class="actions">
+                    <button class="action-btn reject" onclick="handleRequest('${d.id}', 'reject')">Reject</button>
+                    <button class="action-btn approve" onclick="handleRequest('${d.id}', 'approve')">Approve</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
 
-    document.getElementById('pending-badge').textContent = `${count} Pending`;
+        document.getElementById('pending-badge').textContent = `${count} Pending`;
+    });
 }
 
 window.handleRequest = async function (id, action) {
@@ -82,8 +83,7 @@ window.handleRequest = async function (id, action) {
     });
     await log('teacher_appointment_' + action, auth.currentUser.uid, { appointmentId: id });
 
-    loadRequests(auth.currentUser.email);
-    loadAppointments(auth.currentUser.email);
+    // loadRequests and loadAppointments are now handled by onSnapshot
 };
 
 async function loadAppointments(email) {
@@ -92,27 +92,28 @@ async function loadAppointments(email) {
         where('teacherId', '==', email),
         where('status', '==', 'approved')
     );
-    const snapshot = await getDocs(q);
 
-    tbody.innerHTML = '';
-    for (const d of snapshot.docs) {
-        const data = d.data();
-        const studentDoc = await getDoc(doc(db, 'users', data.studentId));
-        const studentData = studentDoc.exists() ? studentDoc.data() : { name: 'Student' };
+    onSnapshot(q, async (snapshot) => {
+        tbody.innerHTML = '';
+        for (const d of snapshot.docs) {
+            const data = d.data();
+            const studentDoc = await getDoc(doc(db, 'users', data.studentId));
+            const studentData = studentDoc.exists() ? studentDoc.data() : { name: 'Student' };
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                <div class="name-cell">
-                    <img src="https://ui-avatars.com/api/?name=${studentData.name}&background=random&size=32" class="mini-avatar">
-                    ${studentData.name}
-                </div>
-            </td>
-            <td>${data.date}</td>
-            <td>${data.time}</td>
-            <td><span class="status approved">Approved</span></td>
-            <td><button class="icon-btn"><i class="fas fa-ellipsis-v"></i></button></td>
-        `;
-        tbody.appendChild(row);
-    }
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <div class="name-cell">
+                        <img src="https://ui-avatars.com/api/?name=${studentData.name}&background=random&size=32" class="mini-avatar">
+                        ${studentData.name}
+                    </div>
+                </td>
+                <td>${data.date}</td>
+                <td>${data.time}</td>
+                <td><span class="status approved">Approved</span></td>
+                <td><button class="icon-btn"><i class="fas fa-ellipsis-v"></i></button></td>
+            `;
+            tbody.appendChild(row);
+        }
+    });
 }
