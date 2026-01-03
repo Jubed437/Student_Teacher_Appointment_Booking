@@ -1,5 +1,5 @@
 import { auth, db } from './firebase.js';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 import { doc, setDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 import { log } from './logger.js';
 
@@ -44,7 +44,7 @@ function switchRole(newRole) {
     } else { // admin
         registerLink.style.display = 'none';
         demoEmail.textContent = 'admin@gmail.com';
-        demoPass.textContent = 'admin';
+        demoPass.textContent = 'admin123';
         if (registerForm.style.display !== 'none') {
             showLoginForm();
         }
@@ -163,4 +163,37 @@ document.querySelectorAll('.toggle-password').forEach(btn => {
             this.classList.add('fa-eye');
         }
     });
+});
+const forgotLink = document.querySelector('.forgot-link');
+const forgotModal = document.getElementById('forgot-modal');
+const closeModal = document.querySelector('.close-modal');
+const forgotForm = document.getElementById('forgot-password-form');
+
+forgotLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    forgotModal.style.display = 'flex';
+});
+
+closeModal.addEventListener('click', () => {
+    forgotModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === forgotModal) {
+        forgotModal.style.display = 'none';
+    }
+});
+
+forgotForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('forgot-email').value;
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+        alert('Password reset email sent! Please check your inbox.');
+        forgotModal.style.display = 'none';
+        e.target.reset();
+    } catch (err) {
+        alert('Error: ' + err.message);
+    }
 });
