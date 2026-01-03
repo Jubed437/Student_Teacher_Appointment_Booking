@@ -33,9 +33,9 @@ A web application for managing appointments between students and teachers, built
 1. Open `setup.html` in your browser
 2. Click "Create Test Accounts" to generate sample data
 3. Use these credentials to login:
-   - **Admin**: admin@test.com / admin123
-   - **Teacher**: teacher@test.com / teacher123
-   - **Student**: student@test.com / student123
+   - **Admin**: admin@test.com / admin
+   - **Teacher**: teacher@test.com / teacher
+   - **Student**: student@test.com / student
 
 ### 3. Run the Application
 
