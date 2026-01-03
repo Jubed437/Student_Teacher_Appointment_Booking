@@ -2,6 +2,7 @@ import { auth, db } from './firebase.js';
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 import { collection, getDocs, doc, updateDoc, query, where, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 import { log } from './logger.js';
+import { showToast } from './utils.js';
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {

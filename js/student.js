@@ -2,6 +2,7 @@ import { auth, db } from './firebase.js';
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 import { collection, getDocs, addDoc, query, where, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 import { log } from './logger.js';
+import { showToast } from './utils.js';
 
 let selectedTeacherEmail = null;
 
@@ -70,7 +71,7 @@ document.getElementById('booking-form').addEventListener('submit', async (e) => 
     e.preventDefault();
 
     if (!selectedTeacherEmail) {
-        alert('Please select a teacher first');
+        showToast('Please select a teacher first', 'info');
         return;
     }
 
@@ -79,7 +80,7 @@ document.getElementById('booking-form').addEventListener('submit', async (e) => 
     const timeSlot = document.querySelector('.time-slot.active');
 
     if (!timeSlot) {
-        alert('Please select a time slot');
+        showToast('Please select a time slot', 'info');
         return;
     }
 
@@ -94,7 +95,7 @@ document.getElementById('booking-form').addEventListener('submit', async (e) => 
     });
 
     await log('student_book_appointment', auth.currentUser.uid, { teacherEmail: selectedTeacherEmail });
-    alert('Appointment request sent!');
+    showToast('Appointment request sent!', 'success');
     e.target.reset();
     // loadAppointments is now handled by onSnapshot
 });

@@ -2,6 +2,7 @@ import { auth, db } from './firebase.js';
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, where, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 import { log } from './logger.js';
+import { showToast } from './utils.js';
 
 onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -67,7 +68,7 @@ window.handleStudent = async function (uid, action) {
             approved: true
         });
         await log('admin_approve_student', auth.currentUser.uid, { studentId: uid });
-        alert('Student approved!');
+        showToast('Student approved!', 'success');
     } else {
         if (confirm('Delete this student account?')) {
             await deleteDoc(doc(db, 'users', uid));
@@ -119,7 +120,7 @@ document.getElementById('add-teacher').addEventListener('click', async () => {
             approved: true
         });
         await log('admin_add_teacher', auth.currentUser.uid, { name: name });
-        alert('Teacher profile added! Now create their login in Firebase Console manually.');
+        showToast('Teacher profile added!', 'success');
         // loadTeachers and loadStats are now handled by onSnapshot
     }
 });

@@ -2,6 +2,7 @@ import { auth, db } from './firebase.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 import { doc, setDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 import { log } from './logger.js';
+import { showToast } from './utils.js';
 
 const btns = document.querySelectorAll('.role-btn');
 const title = document.getElementById('form-title');
@@ -94,7 +95,7 @@ loginForm.addEventListener('submit', async (e) => {
 
         if (querySnapshot.empty) {
             await auth.signOut();
-            alert('User profile not found in database. Please contact admin.');
+            showToast('User profile not found. Please contact admin.', 'error');
             return;
         }
 
@@ -102,20 +103,20 @@ loginForm.addEventListener('submit', async (e) => {
 
         if (userData.role !== role) {
             await auth.signOut();
-            alert('Invalid role selected for this account.');
+            showToast('Invalid role selected for this account.', 'error');
             return;
         }
 
         if (role === 'student' && userData.approved === false) {
             await auth.signOut();
-            alert('Your account is pending admin approval.');
+            showToast('Your account is pending admin approval.', 'info');
             return;
         }
 
         await log('login', userCred.user.uid, { role: role });
         window.location.href = `pages/${role}.html`;
     } catch (err) {
-        alert('Login failed: ' + err.message);
+        showToast('Login failed: ' + err.message, 'error');
     }
 });
 
@@ -138,11 +139,11 @@ registerForm.addEventListener('submit', async (e) => {
 
         await log('student_registered', userCred.user.uid, { name: name, department: dept });
         await auth.signOut();
-        alert('Registration submitted. Please wait for admin approval.');
+        showToast('Registration submitted. Please wait for admin approval.', 'success');
         e.target.reset();
         showLoginForm();
     } catch (err) {
-        alert('Registration failed: ' + err.message);
+        showToast('Registration failed: ' + err.message, 'error');
     }
 });
 
@@ -190,10 +191,10 @@ forgotForm.addEventListener('submit', async (e) => {
 
     try {
         await sendPasswordResetEmail(auth, email);
-        alert('Password reset email sent! Please check your inbox.');
+        showToast('Password reset email sent!', 'success');
         forgotModal.style.display = 'none';
         e.target.reset();
     } catch (err) {
-        alert('Error: ' + err.message);
+        showToast('Error: ' + err.message, 'error');
     }
 });
