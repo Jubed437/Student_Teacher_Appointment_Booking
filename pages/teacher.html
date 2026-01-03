@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="../css/teacher.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h2>Student Appointment System</h2>
+        </div>
+        <div class="user-area">
+            <div class="user-info">
+                <span class="user-name" id="teacher-name">Loading...</span>
+                <span class="user-title" id="teacher-title">Teacher</span>
+            </div>
+            <div class="avatar">
+                <img id="teacher-avatar" src="https://ui-avatars.com/api/?name=Teacher&background=0D8ABC&color=fff"
+                    alt="Teacher">
+                <span class="online-dot"></span>
+            </div>
+            <button class="logout" id="logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div>
+            <section>
+                <div class="section-header">
+                    <h2 class="section-title">Appointment Requests</h2>
+                    <span class="badge" id="pending-badge">0 Pending</span>
+                </div>
+
+                <div class="requests-grid" id="requests-grid">
+                </div>
+            </section>
+
+            <section class="appointments-panel">
+                <div class="section-header">
+                    <h2 class="section-title">Upcoming Appointments</h2>
+                    <a href="#" class="link">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appts-tbody">
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <div>
+            <div class="profile-card">
+                <img id="profile-img"
+                    src="https://ui-avatars.com/api/?name=Teacher&background=0D8ABC&color=fff&size=128" alt="Profile"
+                    class="profile-img">
+                <h2 class="profile-name" id="profile-name">Loading...</h2>
+                <p class="profile-role" id="profile-role">Teacher</p>
+                <p class="profile-dept" id="profile-dept">Department</p>
+
+                <div class="tags" id="expertise-tags">
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-num" id="stat-students">0</span>
+                        <span class="stat-label">Students</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-num" id="stat-rating">0</span>
+                        <span class="stat-label">Rating</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-num" id="stat-hours">0</span>
+                        <span class="stat-label">Hrs/Wk</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schedule-card">
+                <div class="schedule-header">
+                    <h3 class="schedule-title">Today's Schedule</h3>
+                    <span class="date-badge" id="today-date">Today</span>
+                </div>
+
+                <div class="timeline" id="timeline">
+                </div>
+
+                <button class="add-btn" id="add-slot">
+                    <i class="fas fa-plus"></i> Add Availability
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="../js/teacher.js"></script>
+</body>
+
+</html>

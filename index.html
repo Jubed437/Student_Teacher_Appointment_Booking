@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Booking System</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="login-box">
+            <div class="header">
+                <div class="icon-box">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1 class="title"> Appointment Booking System</h1>
+            </div>
+
+            <div class="role-select" id="role-selector">
+                <div class="role-bar">
+                    <button class="role-btn active" data-role="student">Student</button>
+                    <button class="role-btn" data-role="teacher">Teacher</button>
+                    <button class="role-btn" data-role="admin">Admin</button>
+                </div>
+            </div>
+
+            <form id="login-form">
+                <h2 class="form-title" id="form-title">Login as Student</h2>
+
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-envelope left-icon"></i>
+                        <input type="email" id="email" placeholder="name@college.edu" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-lock left-icon"></i>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                        <i class="fas fa-eye toggle-password" data-target="password"></i>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="submit-btn" id="login-btn">Sign In</button>
+
+                <div class="switch-link" id="register-link">
+                    Don't have an account? <a href="#" id="show-register">Register here</a>
+                </div>
+
+                <div id="demo-box"
+                    style="margin-top: 25px; padding: 15px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; font-size: 13px; color: #64748b; text-align: center;">
+                    <i class="fas fa-info-circle"></i> Demo Account:
+                    <strong id="demo-email" style="color: #1e293b;">student@gmail.com</strong> |
+                    Pass: <strong id="demo-pass" style="color: #1e293b;">student</strong>
+                </div>
+            </form>
+
+            <form id="register-form" style="display: none;">
+                <h2 class="form-title">Create Student Account</h2>
+
+                <div class="field">
+                    <label for="reg-name">Full Name</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-user left-icon"></i>
+                        <input type="text" id="reg-name" placeholder="John Doe" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="reg-email">Email Address</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-envelope left-icon"></i>
+                        <input type="email" id="reg-email" placeholder="name@college.edu" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="reg-dept">Department</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-building left-icon"></i>
+                        <select id="reg-dept" required>
+                            <option value="" disabled selected>Select Department</option>
+                            <option value="cs">Computer Science</option>
+                            <option value="eng">Engineering</option>
+                            <option value="sci">Science</option>
+                            <option value="arts">Arts & Humanities</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="reg-password">Create Password</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-lock left-icon"></i>
+                        <input type="password" id="reg-password" placeholder="••••••••" required>
+                        <i class="fas fa-eye toggle-password" data-target="reg-password"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Register</button>
+
+                <div class="switch-link">
+                    Already registered? <a href="#" id="show-login">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="js/index.js"></script>
+</body>
+
+</html>
