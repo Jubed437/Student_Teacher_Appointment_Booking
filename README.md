@@ -2,9 +2,7 @@
 
 A web application for managing appointments between students and teachers, built with vanilla JavaScript and Firebase.
 
-## Live Demo
-
-[Live Demo](https://student-teacher-appointment-booking-rust.vercel.app/)
+## Live Demo (https://student-teacher-appointment-booking-rust.vercel.app/)
 
 ## Features
 
